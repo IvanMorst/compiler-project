@@ -74,6 +74,5 @@ class Token:
         return f"Token({self.type}, '{self.lexeme}', {self.line}:{self.column}, {self.literal})"
 
     def format(self) -> str:
-        """Return the token in the required test output format."""
         lit = f" {self.literal}" if self.literal is not None else ""
         return f"{self.line}:{self.column} {self.type.name} \"{self.lexeme}\"{lit}"

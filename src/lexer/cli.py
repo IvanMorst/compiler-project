@@ -1,12 +1,6 @@
 import argparse
 import sys
-import os
-
-# Добавляем путь к корневой директории в sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-from src.lexer.scanner import Scanner
-
+from .scanner import Scanner
 
 def main():
     parser = argparse.ArgumentParser(description="MiniCompiler Lexical Analyzer")
@@ -19,16 +13,8 @@ def main():
     args = parser.parse_args()
 
     if args.command == "lex":
-        try:
-            with open(args.input, "r", encoding="utf-8") as f:
-                source = f.read()
-        except FileNotFoundError:
-            print(f"Error: Input file '{args.input}' not found", file=sys.stderr)
-            sys.exit(1)
-        except Exception as e:
-            print(f"Error reading input file: {e}", file=sys.stderr)
-            sys.exit(1)
-
+        with open(args.input, "r", encoding="utf-8") as f:
+            source = f.read()
         scanner = Scanner(source)
         tokens = []
         while not scanner.is_at_end():
@@ -36,23 +22,13 @@ def main():
             tokens.append(tok)
             if tok.type.name == "END_OF_FILE":
                 break
-
-        # Write tokens to output
-        try:
-            with open(args.output, "w", encoding="utf-8") as f:
-                for tok in tokens:
-                    f.write(tok.format() + "\n")
-        except Exception as e:
-            print(f"Error writing output file: {e}", file=sys.stderr)
-            sys.exit(1)
-
-        # Report errors to stderr
+        with open(args.output, "w", encoding="utf-8") as f:
+            for tok in tokens:
+                f.write(tok.format() + "\n")
         for err in scanner.errors:
             print(err, file=sys.stderr)
-
         if scanner.errors:
             sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

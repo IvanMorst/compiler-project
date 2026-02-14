@@ -12,12 +12,24 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = []
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0"
+]
+
 [project.scripts]
-compiler = "lexer.cli:main"
+compiler = "src.lexer.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["lexer*", "utils*"]
 
-[tool.setuptools.package-dir]
-"" = "src"
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+    "tests",
+]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
