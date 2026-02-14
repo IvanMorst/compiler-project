@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minicompiler"
+version = "0.1.0"
+description = "A simplified C-like compiler (Sprint 1: Lexical Analysis)"
+authors = [{name = "Your Team", email = "team@example.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+compiler = "lexer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["lexer*", "utils*"]
+
+[tool.setuptools.package-dir]
+"" = "src"
