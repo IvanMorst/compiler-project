@@ -1,0 +1,2 @@
+1:1 ERROR ""test int x = 42;"
+2:1 END_OF_FILE ""

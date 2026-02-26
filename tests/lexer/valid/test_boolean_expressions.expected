@@ -1,0 +1,17 @@
+1:1 KW_IF "if"
+1:4 LPAREN "("
+1:5 IDENTIFIER "x"
+1:7 GT ">"
+1:9 INT_LITERAL "0" 0
+1:11 AND "&&"
+1:14 IDENTIFIER "x"
+1:16 LT "<"
+1:18 INT_LITERAL "10" 10
+1:21 OR "||"
+1:24 IDENTIFIER "flag"
+1:29 EQ "=="
+1:32 KW_TRUE "true"
+1:36 RPAREN ")"
+1:38 LBRACE "{"
+1:39 RBRACE "}"
+2:1 END_OF_FILE ""
