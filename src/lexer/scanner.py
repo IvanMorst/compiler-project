@@ -255,7 +255,7 @@ class Scanner:
     def string(self):
         self.advance()  # consume opening "
         while not self.is_at_end() and self.peek() != '"':
-            # TODO: handle escape sequences if needed
+
             self.advance()
         if self.is_at_end():
             self.errors.append(LexicalError("Unterminated string", self.line, self.column))
