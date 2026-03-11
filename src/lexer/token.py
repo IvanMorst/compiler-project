@@ -45,6 +45,7 @@ class TokenType(Enum):
     STAR_ASSIGN = auto()   # *=
     SLASH_ASSIGN = auto()  # /=
     PERCENT_ASSIGN = auto()# %=
+    ARROW = auto()         # ->
 
     # Delimiters
     LPAREN = auto()        # (
@@ -56,10 +57,12 @@ class TokenType(Enum):
     SEMICOLON = auto()     # ;
     COMMA = auto()         # ,
     DOT = auto()           # .
+    COLON = auto()         # :
 
     # Special
     END_OF_FILE = auto()
     ERROR = auto()
+
 
 class Token:
     def __init__(self, type: TokenType, lexeme: str, line: int, column: int,
@@ -74,5 +77,6 @@ class Token:
         return f"Token({self.type}, '{self.lexeme}', {self.line}:{self.column}, {self.literal})"
 
     def format(self) -> str:
+        """Return the token in the required test output format."""
         lit = f" {self.literal}" if self.literal is not None else ""
         return f"{self.line}:{self.column} {self.type.name} \"{self.lexeme}\"{lit}"
