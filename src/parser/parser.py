@@ -162,30 +162,30 @@ class Parser:
         return parameters
 
     def parse_parameter(self) -> ParamNode:
-        """Parameter ::= Type [":"] IDENTIFIER"""
-        # Сохраняем позицию перед парсингом
+        """Parameter ::= Type [":"] IDENTIFIER | IDENTIFIER ":" Type"""
+        # Try both formats: "int a" and "a: int"
+
         saved_pos = self.current
 
-        try:
-            # Парсим тип
-            type_name = self.parse_type()
-
-            # Проверяем наличие двоеточия (опционально)
+        # First try: Identifier colon type (a: int)
+        if self.check(TokenType.IDENTIFIER):
+            name_token = self.advance()
             if self.match(TokenType.COLON):
-                pass
-
-            # Проверяем наличие идентификатора
-            if not self.check(TokenType.IDENTIFIER):
-                # Если нет идентификатора, восстанавливаем позицию и пробуем другой путь
+                type_name = self.parse_type()
+                return ParamNode(name_token.line, name_token.column, type_name, name_token.lexeme)
+            else:
+                # Restore and try other format
                 self.current = saved_pos
-                raise ParseError("Expected parameter name.", self.peek())
 
-            name_token = self.consume(TokenType.IDENTIFIER, "Expected parameter name.")
-            return ParamNode(name_token.line, name_token.column, type_name, name_token.lexeme)
-        except ParseError:
-            # В случае ошибки, восстанавливаем позицию и пробуем другой путь
-            self.current = saved_pos
-            raise
+        # Second try: type identifier (int a)
+        type_name = self.parse_type()
+
+        # Optional colon
+        if self.match(TokenType.COLON):
+            pass
+
+        name_token = self.consume(TokenType.IDENTIFIER, "Expected parameter name.")
+        return ParamNode(name_token.line, name_token.column, type_name, name_token.lexeme)
 
     # ---- Парсинг структур ----
 

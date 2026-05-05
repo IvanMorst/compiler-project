@@ -5,6 +5,7 @@ MiniCompiler - Главный интерфейс командной строки
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -13,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.lexer import cli as lexer_cli
 from src.parser import cli as parser_cli
+from src.semantic import cli as semantic_cli
 
 
 def main():
@@ -20,12 +22,12 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True,
                                        help="Available commands")
 
-    # Команда lex (из Sprint 1)
+    # Команда lex (Sprint 1)
     lex_parser = subparsers.add_parser("lex", help="Run lexical analysis (tokenization)")
     lex_parser.add_argument("--input", "-i", required=True, help="Input source file")
     lex_parser.add_argument("--output", "-o", required=True, help="Output token file")
 
-    # Команда parse (из Sprint 2)
+    # Команда parse (Sprint 2)
     parse_parser = subparsers.add_parser("parse", help="Run syntactic analysis (build AST)")
     parse_parser.add_argument("--input", "-i", required=True, help="Input source file")
     parse_parser.add_argument("--output", "-o", help="Output file (default: stdout)")
@@ -34,10 +36,22 @@ def main():
     parse_parser.add_argument("--verbose", "-v", action="store_true",
                               help="Print verbose error information")
 
+    # Команда check (Sprint 3 - Semantic analysis)
+    check_parser = subparsers.add_parser("check", help="Run semantic analysis")
+    check_parser.add_argument("--input", "-i", required=True, help="Input source file")
+    check_parser.add_argument("--output", "-o", help="Output file for report")
+    check_parser.add_argument("--verbose", "-v", action="store_true",
+                              help="Print verbose error information")
+    check_parser.add_argument("--show-types", action="store_true",
+                              help="Show type annotations in output")
+    check_parser.add_argument("--dump-symbols", action="store_true",
+                              help="Dump symbol table")
+
     # Команда test
     test_parser = subparsers.add_parser("test", help="Run tests")
     test_parser.add_argument("--lexer", action="store_true", help="Run lexer tests")
     test_parser.add_argument("--parser", action="store_true", help="Run parser tests")
+    test_parser.add_argument("--semantic", action="store_true", help="Run semantic tests")
 
     args = parser.parse_args()
 
@@ -55,6 +69,15 @@ def main():
             cmd.append("--verbose")
         sys.argv = [sys.argv[0]] + cmd
         parser_cli.main()
+    elif args.command == "check":
+        # Вызываем семантический анализатор
+        sys.exit(semantic_cli.run_semantic(
+            input_file=args.input,
+            output_file=args.output,
+            verbose=args.verbose,
+            show_types=args.show_types,
+            dump_symbols=args.dump_symbols
+        ))
     elif args.command == "test":
         # Запуск тестов
         test_runner = Path(__file__).parent.parent / "tests" / "test_runner.py"
@@ -62,6 +85,9 @@ def main():
             os.system(f"python {test_runner} --lexer")
         elif args.parser:
             os.system(f"python {test_runner} --parser")
+        elif args.semantic:
+            # Use pytest for semantic tests
+            os.system(f"pytest tests/semantic/test_semantic.py -v")
         else:
             # Запускаем все тесты
             os.system(f"python {test_runner}")
