@@ -1,14 +1,13 @@
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "minicompiler"
-version = "0.3.0"
+version = "0.4.0"
 description = "MiniCompiler - учебный компилятор для C-подобного языка"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "MIT"}
 authors = [
     {name = "Ivan Morst"}
 ]
@@ -26,9 +25,11 @@ classifiers = [
 [project.optional-dependencies]
 dev = ["pytest>=6.0", "pytest-cov"]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["src*", "tests*"]
+[project.scripts]
+compiler = "src.main:main"
+
+[tool.setuptools]
+packages = ["src", "src.lexer", "src.parser", "src.semantic", "src.ir", "src.utils"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
